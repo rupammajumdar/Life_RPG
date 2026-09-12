@@ -77,7 +77,7 @@ export function MobileNav() {
           MOBILE TOP BAR (Visible only on screens < 768px)
          ═════════════════════════════════════════════════════════════════ */}
       <header
-        className="md:hidden sticky top-0 z-40 flex items-center justify-between px-3 py-2.5"
+        className="mobile-top-bar md:hidden sticky top-0 z-40 flex items-center justify-between px-3 py-2.5"
         style={{
           background: "var(--color-bg-alt)",
           borderBottom: "2px solid var(--color-border)",
@@ -189,7 +189,7 @@ export function MobileNav() {
           MOBILE BOTTOM NAVIGATION BAR (Fixed at bottom for phones)
          ═════════════════════════════════════════════════════════════════ */}
       <nav
-        className="md:hidden fixed bottom-0 left-0 right-0 z-40 flex items-center justify-around"
+        className="mobile-bottom-nav md:hidden fixed bottom-0 left-0 right-0 z-40 flex items-center justify-around"
         style={{
           background: "var(--color-bg-alt)",
           borderTop: "2px solid var(--color-border)",

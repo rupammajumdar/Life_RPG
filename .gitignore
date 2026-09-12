@@ -38,4 +38,5 @@ Thumbs.db
 
 # TypeScript
 *.tsbuildinfo
+next-env.d.ts
 life-rpg/next-env.d.ts
