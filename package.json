@@ -1,0 +1,14 @@
+{
+  "name": "life-rpg-workspace",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Life RPG workspace root proxy",
+  "scripts": {
+    "dev": "npm --prefix life-rpg run dev",
+    "build": "npm --prefix life-rpg run build",
+    "start": "npm --prefix life-rpg run start",
+    "seed": "npm --prefix life-rpg run seed",
+    "test:engine": "npm --prefix life-rpg run test:engine",
+    "lint": "npm --prefix life-rpg run lint"
+  }
+}

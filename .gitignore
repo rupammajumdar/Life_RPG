@@ -1,0 +1,41 @@
+# Dependencies
+node_modules/
+life-rpg/node_modules/
+/.pnp
+.pnp.*
+
+# Next.js build
+life-rpg/.next/
+.next/
+out/
+build/
+dist/
+
+# Environment files with secrets (NEVER commit secrets!)
+.env*.local
+.env
+.env.development
+.env.production
+.env.test
+life-rpg/.env*.local
+life-rpg/.env
+life-rpg/.env.development
+life-rpg/.env.production
+life-rpg/.env.test
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.pnpm-debug.log*
+
+# OS files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+# TypeScript
+*.tsbuildinfo
+life-rpg/next-env.d.ts
