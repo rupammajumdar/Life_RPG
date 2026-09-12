@@ -189,13 +189,21 @@ export function MobileNav() {
           MOBILE BOTTOM NAVIGATION BAR (Fixed at bottom for phones)
          ═════════════════════════════════════════════════════════════════ */}
       <nav
-        className="mobile-bottom-nav md:hidden fixed bottom-0 left-0 right-0 z-40 flex items-center justify-around"
+        className="mobile-bottom-nav md:hidden fixed bottom-0 left-0 right-0 z-40 flex flex-row flex-nowrap items-center justify-center gap-3 sm:gap-4"
         style={{
+          display: "flex",
+          flexDirection: "row",
+          flexWrap: "nowrap",
+          alignItems: "center",
+          justifyContent: "center",
+          gap: "12px",
           background: "var(--color-bg-alt)",
           borderTop: "2px solid var(--color-border)",
           boxShadow: "0 -4px 16px rgba(0, 0, 0, 0.4)",
           paddingBottom: "max(6px, env(safe-area-inset-bottom, 6px))",
           paddingTop: "6px",
+          paddingLeft: "8px",
+          paddingRight: "8px",
         }}
         aria-label="Mobile navigation"
       >
@@ -212,9 +220,11 @@ export function MobileNav() {
                 alignItems: "center",
                 justifyContent: "center",
                 flex: 1,
+                maxWidth: "72px",
                 padding: "4px 2px",
                 textDecoration: "none",
                 position: "relative",
+                whiteSpace: "nowrap",
                 color: isActive ? "var(--color-primary-light)" : "var(--color-text-muted)",
               }}
             >
@@ -248,6 +258,7 @@ export function MobileNav() {
                   letterSpacing: "0.04em",
                   marginTop: "3px",
                   fontWeight: isActive ? "bold" : "normal",
+                  whiteSpace: "nowrap",
                 }}
               >
                 {item.label}
