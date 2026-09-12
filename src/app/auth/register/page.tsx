@@ -7,89 +7,39 @@ import { motion } from "framer-motion";
 import { signIn } from "next-auth/react";
 import toast from "react-hot-toast";
 
-interface FieldProps {
-  id: string;
-  label: string;
-  type?: string;
-  value: string;
-  error?: string;
-  placeholder: string;
-  autoComplete?: string;
-  autoCapitalize?: string;
-  autoCorrect?: string;
-  onChange: (v: string) => void;
-}
-
-function Field({
-  id,
-  label,
-  type = "text",
-  value,
-  error,
-  placeholder,
-  autoComplete,
-  autoCapitalize,
-  autoCorrect,
-  onChange,
-}: FieldProps) {
-  return (
-    <div>
-      <label
-        htmlFor={id}
-        style={{
-          display: "block",
-          fontFamily: "var(--font-display)",
-          fontSize: "8px",
-          color: "var(--color-text-muted)",
-          marginBottom: "6px",
-          letterSpacing: "0.08em",
-        }}
-      >
-        {label}
-      </label>
-      <input
-        id={id}
-        type={type}
-        className="pixel-input"
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        placeholder={placeholder}
-        autoComplete={autoComplete}
-        autoCapitalize={autoCapitalize}
-        autoCorrect={autoCorrect}
-        style={error ? { borderColor: "#ef4444" } : {}}
-      />
-      {error && (
-        <p style={{ color: "#fca5a5", fontSize: "11px", marginTop: "4px" }}>
-          ⚠️ {error}
-        </p>
-      )}
-    </div>
-  );
-}
-
 export default function RegisterPage() {
   const router = useRouter();
-  const [form, setForm] = useState({
-    username: "", email: "", password: "", confirmPassword: "",
-    timezone: Intl.DateTimeFormat().resolvedOptions().timeZone ?? "UTC",
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [timezone] = useState(() => {
+    try {
+      return Intl.DateTimeFormat().resolvedOptions().timeZone || "UTC";
+    } catch {
+      return "UTC";
+    }
   });
+
   const [loading, setLoading] = useState(false);
-  const [errors, setErrors]   = useState<Record<string, string>>({});
+  const [errors, setErrors] = useState<Record<string, string>>({});
 
   const validate = () => {
     const e: Record<string, string> = {};
-    if (!form.username.trim() || form.username.length < 3) e.username = "At least 3 characters";
-    if (!/^\S+@\S+\.\S+$/.test(form.email)) e.email = "Invalid email";
-    if (form.password.length < 8) e.password = "At least 8 characters";
-    if (form.password !== form.confirmPassword) e.confirmPassword = "Passwords don't match";
+    if (!username.trim() || username.length < 3) e.username = "At least 3 characters";
+    if (!/^\S+@\S+\.\S+$/.test(email)) e.email = "Invalid email address";
+    if (password.length < 8) e.password = "At least 8 characters";
+    if (password !== confirmPassword) e.confirmPassword = "Passwords don't match";
     return e;
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     const errs = validate();
-    if (Object.keys(errs).length > 0) { setErrors(errs); return; }
+    if (Object.keys(errs).length > 0) {
+      setErrors(errs);
+      return;
+    }
     setErrors({});
     setLoading(true);
 
@@ -98,10 +48,10 @@ export default function RegisterPage() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          username: form.username.trim(),
-          email: form.email.trim(),
-          password: form.password,
-          timezone: form.timezone,
+          username: username.trim(),
+          email: email.trim().toLowerCase(),
+          password,
+          timezone,
         }),
       });
 
@@ -118,8 +68,8 @@ export default function RegisterPage() {
 
       // Auto sign-in after registration
       await signIn("credentials", {
-        email: form.email,
-        password: form.password,
+        email: email.trim().toLowerCase(),
+        password,
         redirect: false,
       });
 
@@ -135,38 +85,37 @@ export default function RegisterPage() {
   return (
     <div
       style={{
-        minHeight: "100vh",
+        minHeight: "100dvh",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        padding: "2rem",
+        padding: "1.5rem 1rem",
         position: "relative",
-        overflow: "hidden",
+        overflowY: "auto",
       }}
     >
       <div
         style={{
-          position: "absolute",
+          position: "fixed",
           inset: 0,
-          background: "radial-gradient(ellipse at 70% 30%, var(--color-secondary)12 0%, transparent 60%), radial-gradient(ellipse at 30% 70%, var(--color-primary)12 0%, transparent 60%)",
+          background:
+            "radial-gradient(ellipse at 70% 30%, var(--color-secondary)12 0%, transparent 60%), radial-gradient(ellipse at 30% 70%, var(--color-primary)12 0%, transparent 60%)",
           pointerEvents: "none",
         }}
       />
 
-      <motion.div
-        initial={{ opacity: 0, y: 30 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ type: "spring", stiffness: 200, damping: 25 }}
-        style={{ width: "100%", maxWidth: "460px", position: "relative" }}
+      <div
+        style={{
+          width: "100%",
+          maxWidth: "460px",
+          position: "relative",
+          margin: "auto",
+        }}
       >
-        <div style={{ textAlign: "center", marginBottom: "2rem" }}>
-          <motion.div
-            animate={{ rotate: [0, 10, -10, 0] }}
-            transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-            style={{ fontSize: "48px", marginBottom: "1rem" }}
-          >
+        <div style={{ textAlign: "center", marginBottom: "1.5rem" }}>
+          <div style={{ fontSize: "44px", marginBottom: "0.75rem" }}>
             🧙
-          </motion.div>
+          </div>
           <h1
             style={{
               fontFamily: "var(--font-display)",
@@ -189,49 +138,143 @@ export default function RegisterPage() {
           style={{ borderColor: "var(--color-secondary)" }}
         >
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-            <Field
-              id="username"
-              label="HERO NAME"
-              value={form.username}
-              error={errors.username}
-              placeholder="dragonslayer99"
-              autoComplete="username"
-              autoCapitalize="none"
-              autoCorrect="off"
-              onChange={(v) => setForm((f) => ({ ...f, username: v }))}
-            />
-            <Field
-              id="email"
-              label="EMAIL"
-              type="email"
-              value={form.email}
-              error={errors.email}
-              placeholder="hero@example.com"
-              autoComplete="email"
-              autoCapitalize="none"
-              autoCorrect="off"
-              onChange={(v) => setForm((f) => ({ ...f, email: v }))}
-            />
-            <Field
-              id="password"
-              label="PASSWORD"
-              type="password"
-              value={form.password}
-              error={errors.password}
-              placeholder="At least 8 characters"
-              autoComplete="new-password"
-              onChange={(v) => setForm((f) => ({ ...f, password: v }))}
-            />
-            <Field
-              id="confirmPassword"
-              label="CONFIRM PASSWORD"
-              type="password"
-              value={form.confirmPassword}
-              error={errors.confirmPassword}
-              placeholder="Repeat password"
-              autoComplete="new-password"
-              onChange={(v) => setForm((f) => ({ ...f, confirmPassword: v }))}
-            />
+            {/* Username */}
+            <div>
+              <label
+                htmlFor="username"
+                style={{
+                  display: "block",
+                  fontFamily: "var(--font-display)",
+                  fontSize: "8px",
+                  color: "var(--color-text-muted)",
+                  marginBottom: "6px",
+                  letterSpacing: "0.08em",
+                }}
+              >
+                HERO NAME
+              </label>
+              <input
+                id="username"
+                name="username"
+                type="text"
+                className="pixel-input"
+                value={username}
+                onChange={(e) => setUsername(e.target.value)}
+                placeholder="dragonslayer99"
+                autoComplete="username"
+                autoCapitalize="none"
+                autoCorrect="off"
+                spellCheck={false}
+                style={errors.username ? { borderColor: "#ef4444" } : {}}
+              />
+              {errors.username && (
+                <p style={{ color: "#fca5a5", fontSize: "11px", marginTop: "4px" }}>
+                  ⚠️ {errors.username}
+                </p>
+              )}
+            </div>
+
+            {/* Email */}
+            <div>
+              <label
+                htmlFor="email"
+                style={{
+                  display: "block",
+                  fontFamily: "var(--font-display)",
+                  fontSize: "8px",
+                  color: "var(--color-text-muted)",
+                  marginBottom: "6px",
+                  letterSpacing: "0.08em",
+                }}
+              >
+                EMAIL
+              </label>
+              <input
+                id="email"
+                name="email"
+                type="email"
+                className="pixel-input"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                placeholder="hero@example.com"
+                autoComplete="email"
+                autoCapitalize="none"
+                autoCorrect="off"
+                spellCheck={false}
+                style={errors.email ? { borderColor: "#ef4444" } : {}}
+              />
+              {errors.email && (
+                <p style={{ color: "#fca5a5", fontSize: "11px", marginTop: "4px" }}>
+                  ⚠️ {errors.email}
+                </p>
+              )}
+            </div>
+
+            {/* Password */}
+            <div>
+              <label
+                htmlFor="password"
+                style={{
+                  display: "block",
+                  fontFamily: "var(--font-display)",
+                  fontSize: "8px",
+                  color: "var(--color-text-muted)",
+                  marginBottom: "6px",
+                  letterSpacing: "0.08em",
+                }}
+              >
+                PASSWORD
+              </label>
+              <input
+                id="password"
+                name="password"
+                type="password"
+                className="pixel-input"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                placeholder="At least 8 characters"
+                autoComplete="new-password"
+                style={errors.password ? { borderColor: "#ef4444" } : {}}
+              />
+              {errors.password && (
+                <p style={{ color: "#fca5a5", fontSize: "11px", marginTop: "4px" }}>
+                  ⚠️ {errors.password}
+                </p>
+              )}
+            </div>
+
+            {/* Confirm Password */}
+            <div>
+              <label
+                htmlFor="confirmPassword"
+                style={{
+                  display: "block",
+                  fontFamily: "var(--font-display)",
+                  fontSize: "8px",
+                  color: "var(--color-text-muted)",
+                  marginBottom: "6px",
+                  letterSpacing: "0.08em",
+                }}
+              >
+                CONFIRM PASSWORD
+              </label>
+              <input
+                id="confirmPassword"
+                name="confirmPassword"
+                type="password"
+                className="pixel-input"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                placeholder="Repeat password"
+                autoComplete="new-password"
+                style={errors.confirmPassword ? { borderColor: "#ef4444" } : {}}
+              />
+              {errors.confirmPassword && (
+                <p style={{ color: "#fca5a5", fontSize: "11px", marginTop: "4px" }}>
+                  ⚠️ {errors.confirmPassword}
+                </p>
+              )}
+            </div>
 
             {errors.root && (
               <motion.div
@@ -248,9 +291,6 @@ export default function RegisterPage() {
                 ⚠️ {errors.root}
               </motion.div>
             )}
-
-            {/* Timezone (hidden but captured) */}
-            <input type="hidden" value={form.timezone} />
 
             <motion.button
               type="submit"
@@ -280,12 +320,16 @@ export default function RegisterPage() {
           Already a hero?{" "}
           <Link
             href="/auth/login"
-            style={{ color: "var(--color-primary-light)", textDecoration: "none", fontWeight: 600 }}
+            style={{
+              color: "var(--color-primary-light)",
+              textDecoration: "none",
+              fontWeight: 600,
+            }}
           >
             Sign In →
           </Link>
         </p>
-      </motion.div>
+      </div>
     </div>
   );
 }

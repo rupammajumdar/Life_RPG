@@ -252,7 +252,7 @@ h1, h2, h3 {
   border: 2px solid var(--color-border);
   color: var(--color-text);
   font-family: var(--font-body);
-  font-size: 14px;
+  font-size: 16px; /* 16px prevents iOS/Android auto-zoom glitch on focus */
   padding: 10px 14px;
   width: 100%;
   outline: none;
