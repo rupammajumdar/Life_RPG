@@ -7,6 +7,67 @@ import { motion } from "framer-motion";
 import { signIn } from "next-auth/react";
 import toast from "react-hot-toast";
 
+interface FieldProps {
+  id: string;
+  label: string;
+  type?: string;
+  value: string;
+  error?: string;
+  placeholder: string;
+  autoComplete?: string;
+  autoCapitalize?: string;
+  autoCorrect?: string;
+  onChange: (v: string) => void;
+}
+
+function Field({
+  id,
+  label,
+  type = "text",
+  value,
+  error,
+  placeholder,
+  autoComplete,
+  autoCapitalize,
+  autoCorrect,
+  onChange,
+}: FieldProps) {
+  return (
+    <div>
+      <label
+        htmlFor={id}
+        style={{
+          display: "block",
+          fontFamily: "var(--font-display)",
+          fontSize: "8px",
+          color: "var(--color-text-muted)",
+          marginBottom: "6px",
+          letterSpacing: "0.08em",
+        }}
+      >
+        {label}
+      </label>
+      <input
+        id={id}
+        type={type}
+        className="pixel-input"
+        value={value}
+        onChange={(e) => onChange(e.target.value)}
+        placeholder={placeholder}
+        autoComplete={autoComplete}
+        autoCapitalize={autoCapitalize}
+        autoCorrect={autoCorrect}
+        style={error ? { borderColor: "#ef4444" } : {}}
+      />
+      {error && (
+        <p style={{ color: "#fca5a5", fontSize: "11px", marginTop: "4px" }}>
+          ⚠️ {error}
+        </p>
+      )}
+    </div>
+  );
+}
+
 export default function RegisterPage() {
   const router = useRouter();
   const [form, setForm] = useState({
@@ -71,44 +132,6 @@ export default function RegisterPage() {
     }
   };
 
-  const Field = ({
-    id, label, type = "text", value, error, placeholder, onChange,
-  }: {
-    id: string; label: string; type?: string; value: string;
-    error?: string; placeholder: string;
-    onChange: (v: string) => void;
-  }) => (
-    <div>
-      <label
-        htmlFor={id}
-        style={{
-          display: "block",
-          fontFamily: "var(--font-display)",
-          fontSize: "8px",
-          color: "var(--color-text-muted)",
-          marginBottom: "6px",
-          letterSpacing: "0.08em",
-        }}
-      >
-        {label}
-      </label>
-      <input
-        id={id}
-        type={type}
-        className="pixel-input"
-        value={value}
-        onChange={(e) => onChange(e.target.value)}
-        placeholder={placeholder}
-        style={error ? { borderColor: "#ef4444" } : {}}
-      />
-      {error && (
-        <p style={{ color: "#fca5a5", fontSize: "11px", marginTop: "4px" }}>
-          ⚠️ {error}
-        </p>
-      )}
-    </div>
-  );
-
   return (
     <div
       style={{
@@ -172,6 +195,9 @@ export default function RegisterPage() {
               value={form.username}
               error={errors.username}
               placeholder="dragonslayer99"
+              autoComplete="username"
+              autoCapitalize="none"
+              autoCorrect="off"
               onChange={(v) => setForm((f) => ({ ...f, username: v }))}
             />
             <Field
@@ -181,6 +207,9 @@ export default function RegisterPage() {
               value={form.email}
               error={errors.email}
               placeholder="hero@example.com"
+              autoComplete="email"
+              autoCapitalize="none"
+              autoCorrect="off"
               onChange={(v) => setForm((f) => ({ ...f, email: v }))}
             />
             <Field
@@ -190,6 +219,7 @@ export default function RegisterPage() {
               value={form.password}
               error={errors.password}
               placeholder="At least 8 characters"
+              autoComplete="new-password"
               onChange={(v) => setForm((f) => ({ ...f, password: v }))}
             />
             <Field
@@ -199,6 +229,7 @@ export default function RegisterPage() {
               value={form.confirmPassword}
               error={errors.confirmPassword}
               placeholder="Repeat password"
+              autoComplete="new-password"
               onChange={(v) => setForm((f) => ({ ...f, confirmPassword: v }))}
             />
 
