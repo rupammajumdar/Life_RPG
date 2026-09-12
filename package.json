@@ -40,5 +40,11 @@
     "tailwindcss": "^4",
     "tsx": "^4.23.13",
     "typescript": "^5"
+  },
+  "allowScripts": {
+    "esbuild": true,
+    "esbuild@0.28.2": true,
+    "unrs-resolver": true,
+    "unrs-resolver@1.12.2": true
   }
 }
